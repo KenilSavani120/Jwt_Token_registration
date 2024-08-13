@@ -2,7 +2,7 @@ import phones from "../Model/model.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { StatusCodes } from 'http-status-codes';
-import { hashPassword } from "../Authentication/authUtils.js";
+// import { hashPassword } from "../Authentication/authUtils.js";
 import JWT from 'jsonwebtoken';
 import dotenv from "dotenv";
 
@@ -57,6 +57,7 @@ export const UserRegister = async (req, res) => {
 
         
         // Check if the phone number already exists
+        
         const numberExist = await phones.findOne({ phoneNumber });
         if (numberExist) {
             return res.status(400).send({

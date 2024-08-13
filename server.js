@@ -2,12 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDb from "./database/db.js";
 import routes from "./routes/phone_routes.js";
-import passport from 'passport';
+// import passport from 'passport';
 import session from "express-session";
+import passport from './Authentication/oauth.js'; // Import the passport setup
 
 
 
-import { authenticateToken } from "./Authentication/auth_middalware.js";
+
+// import { authenticateToken } from "./Authentication/auth_middalware.js";
 
 
 dotenv.config();
@@ -18,35 +20,35 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+
+
 app.use(session({
-    secret: process.env.GOOGLE_CLIENT_SECRET, // It's better to have a dedicated session secret
-    resave: false,
-    saveUninitialized: false
+  secret: process.env.GOOGLE_CLIENT_SECRET || 'your_session_secret', // Use a dedicated session secret
+  resave: false,
+  saveUninitialized: false
 }));
 
 // Initialize passport and configure sessions
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/auth/google',
-    passport.authenticate('google', { scope: [ 'email', 'profile' ] }
-  ));
-  
-  app.get( '/auth/google/callback',
-    passport.authenticate( 'google', {
-      successRedirect: '/protected',
-      failureRedirect: '/auth/google/failure'
-    })
-  );
 
 // Middleware to parse JSON request bodies
-routes.use(authenticateToken);
+// routes.use(authenticateToken);
 
 connectDb()
 
 // Routes
 app.use('/phone/v1/',routes)
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile','email'] }));
 
+app.get('/auth/google/redirect', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/phone/v1/');
+  });
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
