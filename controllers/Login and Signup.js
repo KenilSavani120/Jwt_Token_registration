@@ -52,8 +52,10 @@ export const authorization = async (req, res, next) => {
 
 export const UserRegister = async (req, res) => {
   try {
-        const { phoneNumber, password } = req.body;
+        // const { phoneNumber, password } = req.body;
 
+
+        
         // Check if the phone number already exists
         const numberExist = await phones.findOne({ phoneNumber });
         if (numberExist) {

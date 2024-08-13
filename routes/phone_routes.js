@@ -4,9 +4,24 @@ import { addPhones, deletePhone, getPhones, updatePhone } from '../controllers/p
 import { phoneNumberValidator } from '../validators/phoneValidation.js';
 import { notEmptyValidate } from '../validators/validationResult.js';
 import { login, UserRegister} from '../controllers/Login and Signup.js';
-import { authenticateToken } from '../Authentication/auth.js';
+import { authenticateToken } from '../Authentication/auth_middalware.js';
+import passport from 'passport';
 
 const routes = express.Router();
+
+// Redirect to Google for authentication
+// routes.get('/auth/google', passport.authenticate('google', {
+//     scope: ['profile']
+// }));
+
+// // Google callback URL
+// routes.get('/auth/google/redirect', 
+//     passport.authenticate('google', { failureRedirect: '/' }),
+//     (req, res) => {
+//         // Successful authentication
+//         res.redirect('/dashboard'); // Redirect to your desired page
+//     }
+// );
 
 routes.get("/:id?",authenticateToken,getPhones)
 routes.post('/login', login);
